@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="40">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Player 1 Controller Selection Var"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"RED-Win64-Shipping.exe"+3CC954C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Player1 Selection for Controller Opcode"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"RED-Win64-Shipping.exe"+4D18C0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Cpu Vs. Cpu // ie. Controller allocator lock"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048,"RED-Win64-Shipping.exe"+4D18C0) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+//mov eax,[rsi]
+nop
+test eax,eax
+je RED-Win64-Shipping.exe+4D1905
+
+exit:
+jmp returnhere
+
+"RED-Win64-Shipping.exe"+4D18C0:
+jmp newmem
+nop
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"RED-Win64-Shipping.exe"+4D18C0:
+mov eax,[rsi]
+test eax,eax
+je RED-Win64-Shipping.exe+4D1905
+//Alt: db 8B 06 85 C0 74 3F
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Code :mov eax,[rsi] Pause before Controller selection to allow cpu vs.</Description>
+      <AddressString>RED-Win64-Shipping.exe+4D18C0</AddressString>
+      <Before>
+        <Byte>FF</Byte>
+        <Byte>49</Byte>
+        <Byte>8B</Byte>
+        <Byte>F4</Byte>
+        <Byte>90</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>06</Byte>
+      </Actual>
+      <After>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>74</Byte>
+        <Byte>3F</Byte>
+        <Byte>85</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <Comments>Only need to enable/freeze the Cpu Vs. Cpu
+The others were used to find the address of the code to freeze before CONTROLLER selection was completed. 
+
+Controller selection was completed AFTER the player selected which side BEFORE match settings displayed.</Comments>
+</CheatTable>
